@@ -1,7 +1,7 @@
 IO.puts "hello world\n"
 
 # Read the file into memory
-{:ok, filecontents} = File.read("input.txt")
+{:ok, filecontents} = File.read("input/day1.txt")
 
 IO.inspect filecontents
 
