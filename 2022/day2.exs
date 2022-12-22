@@ -33,7 +33,7 @@ points_map = %{
 }
 
 # Read the file into memory
-{:ok, filecontents} = File.read("day2.txt")
+{:ok, filecontents} = File.read("input/day2.txt")
 
 # Split input into list of strings on newline
 splitcontents = filecontents |> String.split("\n", trim: true)
