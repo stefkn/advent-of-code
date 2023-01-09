@@ -11,7 +11,7 @@ end)
 
 start = %{:x => 0, :y => 0} # head and tail both start here
 
-IO.inspect filecontents
+# IO.inspect filecontents
 
 headcoords = elem(Enum.map_reduce(filecontents, [start], fn move, prevposlist ->
   prevx = Enum.fetch!(prevposlist, length(prevposlist) - 1).x
@@ -36,7 +36,7 @@ headcoords = elem(Enum.map_reduce(filecontents, [start], fn move, prevposlist ->
   end
 end), 1)
 
-IO.inspect headcoords
+# IO.inspect headcoords
 
 tailcoords = Enum.map_reduce(headcoords, [], fn pos, prevposlist ->
 
@@ -131,11 +131,16 @@ IO.inspect length(Enum.uniq(elem(tailcoords, 0)))
 defmodule Visualise do
   def print_all_moves(inputlist) do
     IO.write "\e[H\e[J";
-    Enum.map(inputlist, fn x -> Visualise.print_single_move(x) end)
+    Enum.map(
+      Enum.with_index(inputlist), fn x -> Visualise.print_single_move(elem(x, 0), elem(x, 1))
+    end)
   end
 
-  def print_single_move(move) do
+  def print_single_move(move, index) do
     IO.write "\e[H\e[J";
+    IO.write("index: ")
+    IO.write(index)
+    IO.write("\n")
     minx = -19
     miny = -20
     maxx = 19
@@ -178,7 +183,7 @@ defmodule Visualise do
       end
       IO.write("\n")
     end
-    Process.sleep(100)
+    Process.sleep(3000)
     # IO.inspect move.head
     # IO.inspect move.tail
   end
