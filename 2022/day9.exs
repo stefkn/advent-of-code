@@ -277,3 +277,62 @@ defmodule KnotMovement do
         %{x: currentpos.x, y: currentpos.y}
     end
   end
+
+  def update_all_knot_positions(rope_configuration) do
+    # IO.inspect("update_all_knot_positions")
+    # IO.inspect(rope_configuration)
+
+    if length(Map.keys(rope_configuration)) === 1 do
+      # Base case: The head is already updated
+      rope_configuration
+    else
+      # Start with the largest knot number (the tail) and work our way
+      # to the head (base case), and then work back up recursively to the tail with updates
+      largest_knot_num = hd(
+        Enum.sort(
+          Enum.filter(Map.keys(rope_configuration), fn x -> x !== :head end),
+          &(&1 >= &2)
+        )
+      )
+      {pos, rope_configuration} = Map.pop!(rope_configuration, largest_knot_num)
+
+      # Recursion!
+      rope_configuration = update_all_knot_positions(rope_configuration)
+
+      # Update the knot after
+      rope_configuration = Map.put(
+        rope_configuration,
+        largest_knot_num,
+        KnotMovement.get_new_position_for_knot(
+          pos,
+          if largest_knot_num === 1 do
+            Map.fetch!(rope_configuration, :head)
+          else
+            Map.fetch!(rope_configuration, largest_knot_num-1)
+          end
+        )
+      )
+      rope_configuration
+    end
+
+    # This doesn't work! Why? Because we're comparing against the position
+    # of the knot ahead in the *previous configuration*! We need to use a method
+    # which allows us to access the result of the get_new_position_for_knot
+    # function for the knot ahead and use it in our current calculation
+    #
+    # result = for {k, v} <- rope_configuration, into: %{} do
+    #   if k === :head do
+    #     # The head is already updated
+    #     {k, v}
+    #   else
+    #     # Update position
+    #     currentpos = v
+    #     # we compare against :head
+    #     aheadpos = Map.fetch!(rope_configuration, if k === 1 do :head else k - 1 end)
+    #     # IO.inspect {"knotnum", k}
+    #     {k, KnotMovement.get_new_position_for_knot(currentpos, aheadpos)}
+    #   end
+    # end
+  end
+
+end
