@@ -126,7 +126,7 @@ tailcoords = Enum.map_reduce(headcoords, [], fn pos, prevposlist ->
 end)
 
 # IO.inspect tailcoords
-IO.inspect length(Enum.uniq(elem(tailcoords, 0)))
+# IO.inspect length(Enum.uniq(elem(tailcoords, 0)))
 
 defmodule Visualise do
   def print_all_moves(inputlist) do
@@ -145,15 +145,13 @@ defmodule Visualise do
     miny = -20
     maxx = 19
     maxy = 20
-    # minx = Enum.min([move.head.x, move.tail.x]) - 10
-    # miny = Enum.min([move.head.y, move.tail.y]) - 10
-    # maxx = Enum.max([move.head.x, move.tail.x]) + 10
-    # maxy = Enum.max([move.head.y, move.tail.y]) + 10
+
     for ycoord <- maxy..miny do
       for xcoord <- minx..maxx do
         if ycoord === miny do
           # Draw legend
-          IO.write(if abs(xcoord) < 10 do abs(xcoord) else abs(xcoord)-10 end) # make them line up better
+          # make them line up better
+          IO.write(if abs(xcoord) < 10 do abs(xcoord) else abs(xcoord)-10 end)
           IO.write("  ")
         else
           if xcoord === maxx do
