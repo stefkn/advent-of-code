@@ -188,3 +188,92 @@ defmodule Visualise do
 end
 
 Visualise.print_all_moves(elem(tailcoords, 1))
+
+
+
+
+
+
+
+
+
+
+# Part 2 =============================================================
+# Rather than two knots, you now must simulate a rope consisting of ten knots. One knot is still the head of the rope and moves according to the series of motions. Each knot further down the rope follows the knot in front of it using the same rules as before.
+
+# We need to refactor -- break out the movement logic into its own discrete function
+defmodule KnotMovement do
+  def get_new_position_for_knot(currentpos, aheadpos) do
+    # IO.inspect "========get_new_position_for_knot========="
+    # IO.inspect currentpos
+    # IO.inspect aheadpos
+    # IO.write("\n")
+    # Process.sleep(3000)
+
+    diff = %{ x: aheadpos.x - currentpos.x, y: aheadpos.y - currentpos.y }
+
+    case diff do
+      # ==================== No move
+      %{x: 0, y: 0} ->
+        currentpos
+      # ==================== Straight moves
+      %{x: 2, y: 0} ->
+        %{x: currentpos.x + 1, y: currentpos.y}
+      %{x: 0, y: 2} ->
+        %{x: currentpos.x, y: currentpos.y + 1}
+      %{x: -2, y: 0} ->
+        %{x: currentpos.x - 1, y: currentpos.y}
+      %{x: 0, y: -2} ->
+        %{x: currentpos.x, y: currentpos.y - 1}
+      #
+      %{x: -2, y: -2} ->
+        %{x: currentpos.x - 1, y: currentpos.y - 1}
+      %{x: 2, y: -2} ->
+        %{x: currentpos.x + 1, y: currentpos.y - 1}
+      %{x: 2, y: 2} ->
+        %{x: currentpos.x + 1, y: currentpos.y + 1}
+      %{x: -2, y: 2} ->
+        %{x: currentpos.x - 1, y: currentpos.y + 1}
+      # ==================== 1-1 Diagonal moves
+      %{x: 1, y: 1} ->
+        currentpos
+      %{x: -1, y: 1} ->
+        currentpos
+      %{x: 1, y: -1} ->
+        currentpos
+      %{x: -1, y: -1} ->
+        currentpos
+      # ==================== 1-0 Diagonal moves
+      %{x: 0, y: 1} ->
+        currentpos
+      %{x: 1, y: 0} ->
+        currentpos
+      %{x: 0, y: -1} ->
+        currentpos
+      %{x: -1, y: 0} ->
+        currentpos
+      # ==================== 1-2 / 2-1 Diagonal moves
+      %{x: 2, y: 1} ->
+        %{x: currentpos.x + 1, y: currentpos.y + 1}
+      %{x: -2, y: 1} ->
+        %{x: currentpos.x - 1, y: currentpos.y + 1}
+      %{x: 2, y: -1} ->
+        %{x: currentpos.x + 1, y: currentpos.y - 1}
+      %{x: -2, y: -1} ->
+        %{x: currentpos.x - 1, y: currentpos.y - 1}
+
+      %{x: 1, y: 2} ->
+        %{x: currentpos.x + 1, y: currentpos.y + 1}
+      %{x: 1, y: -2} ->
+        %{x: currentpos.x + 1, y: currentpos.y - 1}
+      %{x: -1, y: 2} ->
+        %{x: currentpos.x - 1, y: currentpos.y + 1}
+      %{x: -1, y: -2} ->
+        %{x: currentpos.x - 1, y: currentpos.y - 1}
+      other ->
+        IO.inspect {"--------------------other!!!", other}
+        IO.inspect {"pos", currentpos, "aheadpos", aheadpos, "diff", diff}
+        Process.sleep(5000)
+        %{x: currentpos.x, y: currentpos.y}
+    end
+  end
