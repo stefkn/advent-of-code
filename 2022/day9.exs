@@ -403,3 +403,72 @@ knotcoords = Enum.map_reduce(headcoords, [], fn pos, prevposlist ->
     end
   end
 )
+
+defmodule VisualiseLongRope do
+  def print_all_moves(inputlist) do
+    IO.write "\e[H\e[J";
+    Enum.map(
+      Enum.with_index(inputlist), fn x ->
+        VisualiseLongRope.print_single_move(elem(x, 0), elem(x, 1))
+      end
+    )
+  end
+
+  def print_single_move(move, index) do
+    IO.write "\e[H\e[J";
+    IO.write("index: ")
+    IO.write(index)
+    IO.write("\n")
+    minx = -19
+    miny = -20
+    maxx = 19
+    maxy = 20
+
+    # We need to invert our map
+    # (swap keys (knot #s) with values (coords))
+    pos_map = Map.new(move, fn {knot, pos} -> {pos, knot} end)
+
+    for ycoord <- maxy..miny do
+      for xcoord <- minx..maxx do
+        currentpos = %{x: xcoord, y: ycoord}
+
+        if ycoord === miny do
+          # Draw legend
+          # make them line up better
+          IO.write(if abs(xcoord) < 10 do abs(xcoord) else abs(xcoord)-10 end)
+          IO.write("  ")
+        else
+          if xcoord === maxx do
+            # Draw legend
+            IO.write(ycoord)
+          else
+            # Draw Head / tail / 1,2,3, etc
+            if Map.has_key?(pos_map, currentpos) do
+              knot = Map.fetch!(pos_map, currentpos)
+              IO.write(if knot === :head do "H" else knot end)
+              IO.write("  ")
+            else
+              # Draw lines or spaces as appropriate
+              if ycoord === 0 do
+                IO.write("───")
+              else
+                if xcoord === 0 do
+                  IO.write("│  ")
+                else
+                  IO.write("░  ")
+                end
+              end
+            end
+          end
+        end
+      end
+      IO.write("\n")
+    end
+
+    # IO.inspect move
+    # IO.inspect "==="
+    # IO.inspect pos_map
+
+    Process.sleep(250)
+  end
+end
