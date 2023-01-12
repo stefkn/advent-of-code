@@ -472,3 +472,19 @@ defmodule VisualiseLongRope do
     Process.sleep(250)
   end
 end
+
+VisualiseLongRope.print_all_moves(elem(knotcoords, 1))
+
+all_tail_positions = Enum.map(elem(knotcoords, 1), fn posmap ->
+    tailpos = Map.fetch(
+      posmap, number_of_knots
+    )
+    if tailpos === :error do
+      %{x: 0, y: 0}
+    else
+      elem(tailpos, 1)
+    end
+  end
+)
+
+IO.inspect length(Enum.uniq(all_tail_positions))
