@@ -374,3 +374,32 @@ headcoords = elem(Enum.map_reduce(filecontents, [start], fn move, prevposlist ->
 end), 1)
 
 number_of_knots = 9
+
+knotcoords = Enum.map_reduce(headcoords, [], fn pos, prevposlist ->
+    if length(prevposlist) > 0 do
+      last_config = Enum.fetch!(prevposlist, length(prevposlist) - 1)
+      current_num_knots = length(Map.keys(last_config))
+
+      if current_num_knots <= number_of_knots do
+        # we need to add a new knot to the map, at the origin
+        new_config = Map.put(last_config, current_num_knots, %{x: 0, y: 0})
+        # update other knots' positions, head first
+        new_config = Map.replace!(new_config, :head, pos)
+
+        { %{x: 0, y: 0}, prevposlist ++ [KnotMovement.update_all_knot_positions(new_config)] }
+      else
+        # We now have all knots, just update their positions
+        new_config = Map.replace!(last_config, :head, pos)
+
+        { %{x: 0, y: 0}, prevposlist ++ [KnotMovement.update_all_knot_positions(new_config)] }
+      end
+    else
+      # First step
+      new_config = %{
+        :head => pos
+      }
+
+      { %{x: 0, y: 0}, prevposlist ++ [new_config] }
+    end
+  end
+)
