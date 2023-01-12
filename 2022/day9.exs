@@ -336,3 +336,41 @@ defmodule KnotMovement do
   end
 
 end
+
+# Read the input into memory, split on newline -- this stays the same
+{:ok, filecontents} = File.read("input/day9.txt")
+filecontents = filecontents |> String.split("\n", trim: true)
+filecontents = Enum.map(filecontents, fn x -> String.graphemes(x) end)
+
+filecontents = Enum.map(filecontents, fn [head | tail] ->
+  tail = Enum.drop(tail, 1)
+  dist = Enum.reduce(tail, fn x, acc -> acc <> x end)
+  %{:dir => head, :dist => elem(Integer.parse(dist), 0)}
+end)
+
+start = %{:x => 0, :y => 0} # head and tail both start here
+
+headcoords = elem(Enum.map_reduce(filecontents, [start], fn move, prevposlist ->
+  prevx = Enum.fetch!(prevposlist, length(prevposlist) - 1).x
+  prevy = Enum.fetch!(prevposlist, length(prevposlist) - 1).y
+  case move do
+    %{dir: "L", dist: d} ->
+      {"L", prevposlist ++ Enum.map(
+        Enum.to_list(1..d), fn step -> %{:x => prevx - step, :y => prevy}
+      end)}
+    %{dir: "R", dist: d} ->
+      {"R", prevposlist ++ Enum.map(
+        Enum.to_list(1..d), fn step -> %{:x => prevx + step, :y => prevy}
+      end)}
+    %{dir: "U", dist: d} ->
+      {"L", prevposlist ++ Enum.map(
+        Enum.to_list(1..d), fn step -> %{:x => prevx, :y => prevy + step}
+      end)}
+    %{dir: "D", dist: d} ->
+      {"L", prevposlist ++ Enum.map(
+        Enum.to_list(1..d), fn step -> %{:x => prevx, :y => prevy - step}
+      end)}
+  end
+end), 1)
+
+number_of_knots = 9
