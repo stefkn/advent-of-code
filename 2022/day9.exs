@@ -228,7 +228,7 @@ defmodule KnotMovement do
         %{x: currentpos.x - 1, y: currentpos.y}
       %{x: 0, y: -2} ->
         %{x: currentpos.x, y: currentpos.y - 1}
-      #
+      # ====================
       %{x: -2, y: -2} ->
         %{x: currentpos.x - 1, y: currentpos.y - 1}
       %{x: 2, y: -2} ->
@@ -264,7 +264,7 @@ defmodule KnotMovement do
         %{x: currentpos.x + 1, y: currentpos.y - 1}
       %{x: -2, y: -1} ->
         %{x: currentpos.x - 1, y: currentpos.y - 1}
-
+      # ====================
       %{x: 1, y: 2} ->
         %{x: currentpos.x + 1, y: currentpos.y + 1}
       %{x: 1, y: -2} ->
@@ -274,10 +274,13 @@ defmodule KnotMovement do
       %{x: -1, y: -2} ->
         %{x: currentpos.x - 1, y: currentpos.y - 1}
       other ->
-        IO.inspect {"--------------------other!!!", other}
-        IO.inspect {"pos", currentpos, "aheadpos", aheadpos, "diff", diff}
-        Process.sleep(5000)
-        %{x: currentpos.x, y: currentpos.y}
+        IO.inspect "error: impossible move!"
+        IO.inspect {
+          "pos", currentpos,
+          "aheadpos", aheadpos,
+          "diff", diff
+        }
+        Process.sleep(10000)
     end
   end
 
@@ -289,8 +292,9 @@ defmodule KnotMovement do
       # Base case: The head is already updated
       rope_configuration
     else
-      # Start with the largest knot number (the tail) and work our way
-      # to the head (base case), and then work back up recursively to the tail with updates
+      # Start with the largest knot number (the tail)
+      # and work our way to the head (base case),
+      # and then work back up recursively to the tail with updates
       largest_knot_num = hd(
         Enum.sort(
           Enum.filter(Map.keys(rope_configuration), fn x -> x !== :head end),
@@ -472,7 +476,7 @@ defmodule VisualiseLongRope do
     # IO.inspect "==="
     # IO.inspect pos_map
 
-    Process.sleep(250)
+    Process.sleep(800)
   end
 end
 
