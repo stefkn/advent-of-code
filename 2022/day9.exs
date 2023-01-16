@@ -117,10 +117,13 @@ tailcoords = Enum.map_reduce(headcoords, [], fn pos, prevposlist ->
         { %{x: current_tl.x - 1, y: current_tl.y - 1},
         prevposlist ++ [%{tail: %{x: current_tl.x - 1, y: current_tl.y - 1}, head: pos}] }
       other ->
-        IO.inspect {"--------------------other", other}
-        IO.inspect {"pos", pos, "prevpos", prevposlist}
-        { %{x: current_tl.x, y: current_tl.y},
-        prevposlist ++ [%{tail: %{x: current_tl.x, y: current_tl.y}, head: pos}] }
+        IO.inspect "error: impossible move!"
+        IO.inspect {
+          "pos", pos,
+          "current_tl", current_tl,
+          "diff", diff
+        }
+        Process.sleep(10000)
     end
   end
 end)
