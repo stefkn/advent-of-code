@@ -38,3 +38,56 @@ def day2p1(data: String): Int =
   return totalSum
 end day2p1
 
+
+
+def day2p2(data: String): Int =
+  def getMinimumsForEachColorForRounds(round: String): Map[String, Int] =
+    val bag = Map[String, Int](
+      "red" -> 0, 
+      "green" -> 0,
+      "blue" -> 0
+    ).withDefault(i => 0)
+
+    val getMinimumsForRound: ((String, Int)) => (String, Int) = {
+      case (color, count) =>
+        val indexOfColor = round.indexOf(color)
+        if indexOfColor != -1 then
+          val roundsColorNum = round.take(indexOfColor).split(',').last.strip().toInt
+          color -> roundsColorNum
+        else
+          color -> count
+    }
+
+    return bag.map(getMinimumsForRound(_))
+  end getMinimumsForEachColorForRounds
+
+  def getGamePower(string: String): Int =
+    val getMinimumsForGame = (acc:Map[String, Int], curr:Map[String, Int]) => {
+      val res = Map[String, Int](
+        "red" -> 0, 
+        "green" -> 0,
+        "blue" -> 0
+      )
+      val accumulateMinimums: ((String, Int)) => (String, Int) = {
+        case (color, count) =>
+          if acc(color) < curr(color) then 
+            color -> curr(color)
+          else 
+            color -> acc(color)
+      }
+      res.map(accumulateMinimums(_))
+    }
+
+    val rounds = string.split(": ").last.split(";")
+    val minimumsMapping = rounds.map(getMinimumsForEachColorForRounds(_))
+    val overallMinimums = minimumsMapping.reduceLeft(getMinimumsForGame)
+    val gamePower = overallMinimums.values.reduce((a, b) => a * b)
+    return gamePower
+  end getGamePower
+
+  val totalSum = data
+    .linesIterator
+    .map(getGamePower(_))
+    .sum
+  return totalSum
+end day2p2
