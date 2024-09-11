@@ -60,3 +60,55 @@ def day3p1(data: String): Int =
   return partNumbers.sum
 end day3p1
 
+
+def day3p2(data: String): Int =
+  def getFullIntegerFromDataRow(row: Array[Char], index: Int): Int = {
+    println(row.mkString(" "))
+    println(index)
+    return 100
+  }
+
+  def createPartNumberListFromMapping(
+    schematicData: Array[Array[Char]]
+  ): List[Int] = {
+    val directions = List(
+      (1, 0), (-1, 0), (0, -1), (0, 1),  // UP DOWN LEFT RIGHT
+      (1, -1), (1, 1), (-1, -1), (-1, 1)  // UP-L UP-R DOWN-L DOWN-R
+    )
+    var temp = ""
+    var adjacent = false
+    var result: List[Int] = List()
+
+    for {
+      row <- 0 until schematicData.length
+      col <- 0 until schematicData(row).length
+    } {
+      val current = schematicData(row)(col)
+      var currentAdj: List[Int] = List()
+
+      if (current == '*')
+        println(schematicData(row).mkString(" "))
+        // check adjacency 
+        for 
+          (rOffset, cOffset) <- directions 
+        do 
+          val newRow = row + rOffset
+          val newCol = col + cOffset
+          
+          if (schematicData(newRow)(newCol).isDigit) {
+            var fullInt = getFullIntegerFromDataRow(schematicData(newRow), newCol)
+            currentAdj = currentAdj.appended(fullInt)
+          }
+
+        if (currentAdj.length > 1) {
+          println(currentAdj)
+        }
+    }
+    println(result)
+    return result
+  }
+
+  val schematicDataArray = data.linesIterator.map(_.toCharArray).toArray
+  val partNumbers = createPartNumberListFromMapping(schematicDataArray)
+  return partNumbers.sum
+end day3p2
