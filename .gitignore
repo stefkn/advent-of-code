@@ -1,5 +1,8 @@
 .metals
 .vscode
 2023/project/target
+2023/project/project/target
+2023/project/project/project/target/config-classes
 2023/target
 .DS_Store
+.bloop
